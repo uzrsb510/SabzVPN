@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#064e3b">
+  <title>SabzVPN | فیلترشکن رایگان</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Tahoma, Arial, sans-serif;
+      color: white;
+      background: linear-gradient(160deg, #022c22, #047857, #064e3b);
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px;
+    }
+
+    button, a { -webkit-tap-highlight-color: transparent; }
+
+    .icon-button {
+      border: 0;
+      color: white;
+      background: #ffffff20;
+      border-radius: 12px;
+      padding: 12px;
+      font-size: 22px;
+      cursor: pointer;
+    }
+
+    .brand { font-size: 21px; font-weight: bold; }
+
+    .status {
+      margin: 18px auto;
+      width: fit-content;
+      padding: 10px 18px;
+      border-radius: 30px;
+      background: #ffffff18;
+      color: #d1fae5;
+    }
+
+    main {
+      max-width: 440px;
+      margin: 18px auto;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .globe {
+      margin: 24px auto;
+      width: 150px;
+      height: 150px;
+      border: 2px solid #a7f3d0;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 72px;
+      box-shadow: 0 0 35px #34d39935;
+    }
+
+    .connect {
+      width: 170px;
+      height: 62px;
+      margin: 18px auto;
+      border: 0;
+      border-radius: 18px;
+      background: #34d399;
+      color: #022c22;
+      font-size: 21px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .connect:disabled {
+      opacity: .7;
+      cursor: wait;
+    }
+
+    .countries {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin: 28px 0;
+    }
+
+    .country {
+      padding: 14px 4px;
+      border: 1px solid #ffffff25;
+      border-radius: 15px;
+      background: #ffffff10;
+      color: white;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .country .flag {
+      display: block;
+      font-size: 29px;
+      margin-bottom: 8px;
+    }
+
+    .country.selected {
+      border: 2px solid #6ee7b7;
+      background: #10b98135;
+    }
+
+    .note {
+      font-size: 12px;
+      line-height: 2;
+      color: #d1fae5;
+    }
+
+    .menu {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      background: #0009;
+    }
+
+    .menu.open { display: block; }
+
+    .panel {
+      width: min(85%, 340px);
+      height: 100%;
+      padding: 22px;
+      background: #064e3b;
+      box-shadow: -10px 0 40px #0004;
+    }
+
+    .panel h2 { color: #6ee7b7; }
+
+    .panel p { line-height: 2; font-size: 14px; }
+
+    .panel a {
+      display: block;
+      margin: 16px 0;
+      padding: 14px;
+      border-radius: 12px;
+      color: white;
+      text-decoration: none;
+      background: #ffffff15;
+    }
+
+    .close {
+      float: left;
+      border: 0;
+      color: white;
+      background: transparent;
+      font-size: 28px;
+    }
+
+    footer {
+      padding: 12px;
+      text-align: center;
+      color: #d1fae5;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <button class="icon-button" id="menuButton" aria-label="باز کردن منو">☰</button>
+    <div class="brand">💚 SabzVPN</div>
+    <div aria-label="وضعیت فعلی" id="topStatus">⚪ خاموش</div>
+  </header>
+
+  <main>
+    <div class="status" id="status">اتصال برقرار نیست</div>
+
+    <div class="globe" id="globe">🌐</div>
+
+    <h2 id="countryTitle">کشوری انتخاب نشده</h2>
+    <p>کشور موردنظر خود را انتخاب کنید</p>
+
+    <button class="connect" id="connectButton">اتصال</button>
+
+    <div class="countries">
+      <button class="country" data-country="آلمان">
+        <span class="flag">🇩🇪</span>آلمان
+      </button>
+      <button class="country" data-country="هلند">
+        <span class="flag">🇳🇱</span>هلند
+      </button>
+      <button class="country" data-country="فرانسه">
+        <span class="flag">🇫🇷</span>فرانسه
+      </button>
+      <button class="country" data-country="ترکیه">
+        <span class="flag">🇹🇷</span>ترکیه
+      </button>
+    </div>
+
+    <p class="note">
+      انتخاب کشور فقط ظاهر برنامه را تغییر می‌دهد.
+      برای اتصال واقعی باید هسته VPN و کانفیگ معتبر نصب و پیکربندی شوند.
+    </p>
+  </main>
+
+  <div class="menu" id="menu">
+    <div class="panel">
+      <button class="close" id="closeMenu" aria-label="بستن منو">×</button>
+      <h2>💚 درباره SabzVPN</h2>
+      <p>
+        به سبز VPN خوش آمدید! هدف ما فراهم کردن رابطی ساده برای انتخاب کشور
+        و مدیریت اتصال VPN است. اتصال واقعی پس از اضافه شدن هسته VPN فعال می‌شود.
+      </p>
+      <a href="https://t.me/mmkk8499" target="_blank" rel="noopener">
+        🛟 پشتیبانی کاربران
+      </a>
+      <a href="https://t.me/ommkkobot" target="_blank" rel="noopener">
+        ✈️ ساخت کانفیگ رایگان
+      </a>
+    </div>
+  </div>
+
+  <footer>SabzVPN • نسخه نمایشی رابط کاربری</footer>
+
+  <script>
+    const menu = document.getElementById("menu");
+    const connectButton = document.getElementById("connectButton");
+    const status = document.getElementById("status");
+    const topStatus = document.getElementById("topStatus");
+    const countryTitle = document.getElementById("countryTitle");
+    const globe = document.getElementById("globe");
+
+    let selectedCountry = "";
+
+    document.getElementById("menuButton").onclick = () => {
+      menu.classList.add("open");
+    };
+
+    document.getElementById("closeMenu").onclick = () => {
+      menu.classList.remove("open");
+    };
+
+    menu.addEventListener("click", (event) => {
+      if (event.target === menu) menu.classList.remove("open");
+    });
+
+    document.querySelectorAll(".country").forEach((button) => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll(".country").forEach((item) => {
+          item.classList.remove("selected");
+        });
+
+        button.classList.add("selected");
+        selectedCountry = button.dataset.country;
+        countryTitle.textContent = selectedCountry;
+      });
+    });
+
+    connectButton.onclick = () => {
+      if (!selectedCountry) {
+        alert("ابتدا یک کشور انتخاب کنید.");
+        return;
+      }
+
+      alert(
+        "این نسخه فقط ظاهر برنامه است و هنوز به هسته VPN متصل نشده است. " +
+        "برای اتصال واقعی باید سرویس VPN اندروید اضافه شود."
+      );
+    };
+  </script>
+</body>
+  </html>
